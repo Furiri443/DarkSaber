@@ -39,14 +39,14 @@ DarkSaber là một dự án cheat cho game `Echo` của DevG. Nó tạo `echo.d
 Dự án dùng Rust `nightly` và target Windows x64. Thư mục `rust-toolchain.toml` đã chỉ định toolchain.
 
 ```bash
-cd /Volumes/SoftwareDisk/Data/CodeP/DarkSaber
-env CARGO_HOME=$PWD/.cargo cargo build --release --target x86_64-pc-windows-gnu
+rustup default nightly
+cargo build --release
 ```
 
 Kết quả:
 
-- `target/x86_64-pc-windows-gnu/release/echo.dll`
-- `target/x86_64-pc-windows-gnu/release/darksaber_loader.exe`
+- `target/release/echo.dll`
+- `target/release/darksaber_loader.exe`
 
 ## Sử dụng
 

@@ -1,0 +1,32 @@
+[package]
+name = "echo"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+# Tên file output: echo.dll. Đây là DLL probe/mod nạp vào tiến trình game.
+crate-type = ["cdylib"]
+
+[dependencies]
+# Inline hooking (kế thừa detour-rs). Bật static-detour (cần nightly) để dùng
+# macro static_detour! cho hook global gọn gàng + GenericDetour khi cần.
+retour = { version = "0.3", features = ["static-detour"] }
+
+# Overlay = cửa sổ layered riêng (GDI), KHÔNG hook đồ hoạ game → tương thích cả
+# Wine lẫn Windows thật, bất kể game chạy DX11/DX12/Vulkan/OpenGL.
+windows-sys = { version = "0.59", features = [
+  "Win32_Foundation",
+  "Win32_Graphics_Gdi",              # vẽ menu (FillRect/TextOutW/CreateFontW…)
+  "Win32_Security",                  # loader_safe: CreateProcess/CreateRemoteThread attrs
+  "Win32_System_Diagnostics_Debug",
+  "Win32_System_LibraryLoader",      # GetModuleHandleW / GetProcAddress
+  "Win32_System_Memory",             # loader_safe: VirtualAllocEx
+  "Win32_System_SystemServices",     # DLL_PROCESS_ATTACH
+  "Win32_System_Threading",
+  "Win32_UI_WindowsAndMessaging",    # CreateWindowExW / message loop / layered
+  "Win32_UI_Input_KeyboardAndMouse", # GetAsyncKeyState (điều khiển menu)
+] }
+
+[profile.release]
+panic = "abort"   # tránh unwinding qua FFI boundary trong DllMain
+lto = true
